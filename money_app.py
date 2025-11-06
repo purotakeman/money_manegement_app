@@ -9,6 +9,8 @@
 
 import csv
 import sys
+import pandas as pd     # pandasをpdという略称でインポート
+import matplotlib.pyplot as plt   # グラフ表示のためにmatplotlibをインポート  
 
 print("家計簿アプリ起動したで")
 print("-" * 30)
@@ -88,6 +90,19 @@ def add_record():
     print(f"記録追加したで！：{category}{amount_int}円")
 
 
+def show_analysis():
+    """ pandasとmatplotlibを使って、データ分析の結果をグラフ化する """
+    try:
+        df = pd.read_csv(file_name, encoding='cp932')   # csvファイルをDataFrameとして読み込む
+        df['amount'] = pd.to_numeric(df["amount"], errors='coerce')     # 金額(amount)列が文字列になっている可能性があるため、数値型に変換する
+        
+
+
+
+
+
+
+
 """ 
 メインの処理ループ
 """
@@ -148,44 +163,6 @@ if __name__ == "__main__":
 
 
 
-""" while True:
 
-    print("\n---新しい記録を入力---")
-    date_input = input("日付(例: 2025-10-28) か、 q(終了)を入力してな: ")    # ユーザーから「項目」の入力を受け付ける  #inputは文字列で受け取ってしまう
 
-    if date_input == "q":
-        print("じゃあな！")
-        break
-
-    category = input("項目(例：食費、給与) を入力してな: ")                   # ユーザーに金額の入力を求める
-    amount_str = input("金額(数字)を入力してな: ")
-
-    try:
-        # aomunt_str(文字列から整数型に変換)
-        amount_int = int(amount_str)
-    except ValueError:
-        print("エラー:金額は数字で入力してな！記録中止や( ﾟДﾟ)ﾊｧ?")
-        continue
-
-        # 取得した3つの変数を適切なキー名で辞書に格納する
-    new_entry = {
-        "date": date_input,
-        "category": category,
-        "amount_str": amount_int
-    }
-
-    records.append(new_entry)
-    print("記録追加したで！")
-
-    print("-" * 30)
-    print("入力受付したで！")
-    print("合計記録数:", len(records))
-    print("記録されたデータや:", records)
- """
-
-""" 
-from datetime import datetime as dt
-tdatetime = dt.now()
-today = tdatetime.strftime('%Y/&m/%d')
-"""
 
