@@ -4,6 +4,14 @@
     →リスト(list)と辞書(dict)
     リスト：複数のデータを順番に管理する  "[]"
     辞書　：キーと値のセットを管理する    "{}"
+・pandasとmatplotlib.pyplotのインポート:グラフ表示するためにインポート
+        グラフ表示の際に文字化け対策として、font-family対策
+・基本的な文法: if, for, while
+    データ構造: list, dict
+    モジュール: csv, sys の利用
+    ファイル操作: データの読み込み、保存（永続化）
+    構造化: 関数（def）を使ったプログラムの設計
+    応用: 外部ライブラリの**pandasとmatplotlib**を使ったデータ分析とグラフ化
 
 """
 
@@ -95,12 +103,18 @@ def show_analysis():
     try:
         df = pd.read_csv(file_name, encoding='cp932')   # csvファイルをDataFrameとして読み込む
         df['amount'] = pd.to_numeric(df["amount"], errors='coerce')     # 金額(amount)列が文字列になっている可能性があるため、数値型に変換する
-        
 
+        category_summary = df.groupby('category')['amount'].sum()   # category毎の合計金額を計算する(DataFrameの便利な機能)
+        plt.rcParams['font.family'] = 'MS Gothic'    # 場合によってはYu Gothicもアリ
+        plt.rcParams['font.size'] = 12  # フォントが小さくても見やすいように調整する場合(任意)
+        category_summary.plot(kind='bar', title='項目別 合計金額')
+        plt.ylabel('金額(円)')
+        plt.show()  #グラフを画面に表示させる
 
-
-
-
+    except FileNotFoundError:
+        print("kakeibo.csv が見つからんわ！先に記録を追加・保存しいや( ﾟДﾟ)ﾊｧ?")
+    except Exception as e:
+        print(f"データ分析中にエラーなったわ！( ﾟДﾟ)ﾊｧ?: {e}")
 
 
 """ 
@@ -111,8 +125,8 @@ def main_loop():
 
     while True:
         print("\n--- メニュー ---")
-        print("1: 記録すんで | 2:残高表示すんで | 3:終了")
-        choice = input("どないするん!? (1~3) ：")
+        print("1: 記録すんで | 2: 残高表示すんで | 3: グラフ表示したる | q: 終了")
+        choice = input("どないするん!? (1~3 or q) ：")
 
         if choice == '1':
             # 記録追加機能の呼び出し
@@ -127,6 +141,11 @@ def main_loop():
             pass
 
         elif choice == '3':
+            show_analysis()
+
+            pass
+
+        elif choice == 'q':
             # データの保存処理
             save_records()
             print("アプリ終了すんで！")
@@ -144,7 +163,7 @@ def save_records():
         print("保存する記録はないで！")
         return
     
-    fieldnames = ['data', 'category', 'amount']
+    fieldnames = ['date', 'category', 'amount']
 
     try:
         with open(file_name, 'w', newline='', encoding='cp932') as f:
